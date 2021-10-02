@@ -41,6 +41,7 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    
     /**
      * Get a validator for an incoming registration request.
      *
@@ -50,11 +51,25 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'middle_name' => ['max:255'],
+            'first_name' => ['required', 'string', 'max:60'],
+            'last_name' => ['required', 'string', 'max:60'],
+            'middle_name' => ['max:60'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'max:60', 'confirmed'],
+            
+        ],
+        [
+            'first_name.required' => 'Необходимо указать имя!',
+            'first_name.max:60'   => 'Поле "Имя" должно содержать не более 60 символов!',
+            'last_name.required'  => 'Необходимо указать фамилию!',
+            'last_name.max:60'    => 'Поле "Фамилия" должно содержать не более 60 символов!',
+            'email.required'      => 'Необходимо указать E-mail!',
+            'email.email'         => 'E-mail указан неправильно!',
+            'email.max:255'       => 'Поле "E-mail" должно содержать не более 255 символов!',
+            'password.required'   => 'Необходимо указать пароль!',
+            'password.min:8'      => 'Поле "Пароль" должно содержать не менее 8 символов!',
+            'password.max:60'     => 'Поле "Пароль" должно содержать не более 60 символов!',
+            'password.confirmed'  => 'Пароли не совпадают!'
         ]);
     }
 

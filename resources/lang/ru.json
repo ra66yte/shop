@@ -1,0 +1,16 @@
+{
+    "Register": "Регистрация",
+    "First Name": "Имя",
+    "Last Name": "Фамилия",
+    "Middle Name": "Отчество",
+    "Password": "Пароль",
+    "Confirm Password": "Повторите пароль",
+    "SignUp": "Создать аккаунт",
+    "Login": "Вход",
+    "E-Mail Address": "E-mail Адрес",
+    "SignIn": "Войти",
+    "Remember Me": "Запомнить меня",
+    "Forgot Your Password": "Забыли пароль",
+    "Logout": "Выйти из аккаунта"
+
+}
