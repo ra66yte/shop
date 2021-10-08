@@ -174,6 +174,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // Roles and permissions
+        App\Providers\RolesServiceProvider::class,
+        App\Providers\PermissionsServiceProvider::class,
 
     ],
 
