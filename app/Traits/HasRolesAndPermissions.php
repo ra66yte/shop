@@ -82,4 +82,9 @@ trait HasRolesAndPermissions
         return $this->givePermissionsTo($permissions);
     }
 
+    public function getRolesNames() {
+        $roles = $this->roles()->select('name')->get();
+        return $roles;
+    }
+
 }

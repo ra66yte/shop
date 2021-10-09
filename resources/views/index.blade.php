@@ -13,10 +13,7 @@
             @endif
             </div>
         </div>
-        <br>
-        <div class="card">
-            ExampleShop 2021
-        </div>
+        @include('layouts.copyright')
     </aside>
 @endsection
 
@@ -32,7 +29,7 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     </main>
 
 @endsection

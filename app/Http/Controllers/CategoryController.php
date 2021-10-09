@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -9,8 +10,13 @@ class CategoryController extends Controller
 {
 
     public function index() {
-        $data['categories'] = Category::select(['id', 'title', 'description'])->get();
+        $data['categories'] = Category::select(['id', 'parent_id', 'title', 'description'])->get();
         return view('categories.index', $data);
+    }
+
+    public function panelIndex() {
+        $data['categories'] = Category::select(['id', 'parent_id', 'title', 'description'])->get();
+        return view('panel.category_list', $data);
     }
 
     public function show($id) {
@@ -22,13 +28,14 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-    public function store(Request $req) {
-        $category = new Category();
-        $category->title = $req->title;
-        $category->description = $req->desc;
-        $category->save();
+    public function store(addCategoryRequest $req) {
 
-        return redirect()->route('categories_list');
+//        $category = new Category();
+//        $category->title = $req->title;
+//        $category->description = $req->desc;
+//        $category->save();
+//
+//        return redirect()->route('categories_list');
     }
 
     public function update(Request $req) {
