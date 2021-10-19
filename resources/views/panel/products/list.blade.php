@@ -13,7 +13,7 @@
         <div class="card-header d-flex justify-content-between align-items-center border border-bottom-0">
             <div>Товары</div>
             <div>
-                <a href="{{ route('add_product') }}" class="btn btn-dark">Добавить</a>
+                <a href="{{ route('add_product') }}" class="btn btn-outline-secondary">Добавить</a>
             </div>
         </div>
 

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    let id = document.getElementById('product-id') ? document.getElementById('product-id').value : null;
     let form = document.getElementById('add-product-form') ? document.getElementById('add-product-form') : document.getElementById('update-product-form');
     let title = document.getElementById('title');
     let alias = document.getElementById('alias');
@@ -8,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let fields = document.querySelectorAll('input.form-control, input.form-control-file, textarea.form-control, select.form-control');
     let clear = '.products__image-clear';
     let arrImages = [];
+
+    let deleteProduct = document.getElementById('delete-product') ? document.getElementById('delete-product') : null;
 
     form.addEventListener('submit', (event) => {
         event.stopPropagation();
@@ -36,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             data.append('old_images', oldImages);
-            data.append('id', document.getElementById('product-id').value);
+            data.append('id', id);
 
 
         }
@@ -80,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     title.addEventListener('input', function () {
+        if (title.value === '') alias.value = '';
+
         axios
             .post(alias.dataset.action, {str: title.value})
             .then(response => {
@@ -92,6 +97,17 @@ document.addEventListener('DOMContentLoaded', function () {
         clearImages();
         if (checkErrors(this)) showImages(this);
     });
+
+    if (deleteProduct) {
+        deleteProduct.addEventListener('click', function () {
+            axios
+                .post(this.dataset.action, {id: id})
+                .then(response => {
+                    if (response.data.success) setCookie('success', response.data.success);
+                    window.location = response.data.route;
+                });
+        });
+    }
 
     function checkErrors(inputFiles) {
         images.classList.remove('is-invalid');

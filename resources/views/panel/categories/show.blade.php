@@ -12,7 +12,7 @@
 @section('content')
     <div class="card">
 
-        <div class="card-header">{{ $category->title }}</div>
+        <div class="card-header">Редактирование категории <b>"{{ $category->title }}"</b></div>
         <div class="card-body">
             <div class="form-group">
                 <input id="category-id" type="hidden" name="id" value="{{ $category->id }}">
@@ -63,7 +63,7 @@
                     <a id="save" class="btn btn-success d-none"
                        data-action="{{ route('category_update') }}">Сохранить</a>
                     <a id="edit" class="btn btn-primary">Редактировать</a>
-                    <a id="delete" class="btn btn-danger d-none"
+                    <a id="delete" class="btn btn-outline-danger d-none"
                        data-action="{{ route('category_delete') }}">Удалить</a>
                 </div>
             </div>

@@ -13,7 +13,7 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header">Редактирование товара <b>{{ $product->title }}</b></div>
+        <div class="card-header">Редактирование товара <b>"{{ $product->title }}"</b></div>
         <div class="card-body">
             <form id="update-product-form" action="{{ route('product_update') }}" method="post" enctype="multipart/form-data">
                 @csrf
@@ -51,8 +51,7 @@
                            name="alias"
                            required
                            value="{{ $product->alias }}"
-                           data-action="{{ route('panel_get_alias') }}"
-                           disabled>
+                           data-action="{{ route('panel_get_alias') }}">
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>
                 <div class="form-group">
@@ -99,7 +98,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12"><input class="btn btn-success" type="submit" value="Сохранить"></div>
+                    <div class="col d-flex justify-content-between">
+                        <input class="btn btn-success" type="submit" value="Сохранить">
+                        <a id="delete-product" class="btn btn-outline-danger"
+                           data-action="{{ route('product_delete') }}">Удалить</a>
+                    </div>
                 </div>
             </form>
         </div>

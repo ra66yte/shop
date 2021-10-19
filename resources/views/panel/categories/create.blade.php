@@ -50,6 +50,21 @@
                         @enderror
                     </div>
                     <div class="col px-0 pt-2">
+                        <label for="alias">Алиас: </label>
+                        <input id="alias"
+                               class="form-control @error('alias') is-invalid @enderror"
+                               type="text"
+                               name="alias"
+                               required
+                               value="{{ old('alias') }}"
+                               data-action="{{ route('panel_get_alias') }}">
+                        @error('alias')
+                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                        @enderror
+                    </div>
+                    <div class="col px-0 pt-2">
                         <label for="desc">Описание:</label> <textarea id="desc"
                                                                       class="form-control @error('desc') is-invalid @enderror"
                                                                       name="desc">{{ old('desc') }}</textarea>
@@ -61,9 +76,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><input class="btn btn-primary" type="submit" value="Добавить"></div>
+                    <div class="col-md-12"><input class="btn btn-success" type="submit" value="Добавить"></div>
                 </div>
             </form>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="{{ asset('js/panel.add_cat.js') }}"></script>
 @endsection

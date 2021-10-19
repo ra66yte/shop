@@ -57,16 +57,18 @@ class ProductController extends Controller
         $product->save();
 
         $old_images = explode(",", $req->old_images);
-        foreach ($product->photos as $photo) {
 
-            if (in_array($photo->id, $old_images)) continue;
+        if ($product->photos->count()) {
+            foreach ($product->photos as $photo) {
 
-            if (Storage::exists('public/' . $photo->image)) { // ToDo: :-)
-                Storage::disk('public')->delete($photo->image);
-                $product_photo = ProductPhoto::find($photo->id);
-                if ($product_photo) $product_photo->delete();
+                if (in_array($photo->id, $old_images)) continue;
+
+                if (Storage::exists('public/' . $photo->image)) {
+                    Storage::disk('public')->delete($photo->image);
+                    $photo->delete();
+                }
+
             }
-
         }
 
         if ($req->hasFile('images')) $this->addProductPhoto($req->file('images'), $product->id);
@@ -94,10 +96,17 @@ class ProductController extends Controller
     {
         $product = Product::find($req->id);
         if ($product->photos->count()) {
-
+            foreach ($product->photos as $photo) {
+                if (Storage::exists('public/' . $photo->image)) {
+                    Storage::disk('public')->delete($photo->image);
+                    $photo->delete();
+                }
+            }
         }
 
-        return ['success' => 'Товар удален', 'route' => route('panel_products_list')];
+        $product->delete();
+
+        return ['success' => 'Товар удален.', 'route' => route('panel_products_list')];
     }
 
     private function addProductPhoto($images, $id)

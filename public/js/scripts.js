@@ -80,8 +80,9 @@ function showRequestMessage(message, className = 'success') {
     if (message === '') return false;
 
     let messageBlock = document.getElementById('header-messages');
+    messageBlock.innerHTML = '';
 
-    messageBlock.insertAdjacentHTML('beforebegin', '<div class="alert alert-' + className + ' w-100 text-center alert-dismissible fade show" role="alert">\n' +
+    messageBlock.insertAdjacentHTML('afterbegin', '<div class="alert alert-' + className + ' w-100 text-center alert-dismissible fade show" role="alert">\n' +
         '<span id="header-message"></span>' +
         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
         '<span aria-hidden="true">&times;</span>\n' +

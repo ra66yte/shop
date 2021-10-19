@@ -26,6 +26,7 @@ class AddCategoryRequest extends FormRequest
         return [
             'parent_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('id', $this->parent_id)],
             'title' => 'required|min:2|max:60|unique:App\Models\Category,title',
+            'alias' => 'string|unique:App\Models\Category,alias',
             'desc' => 'required|min:10|max:255'
         ];
     }
@@ -39,6 +40,8 @@ class AddCategoryRequest extends FormRequest
             'title.min' => 'Название должно содержать не менее 2 символов.',
             'title.max' => 'Название может содержать не более 60 символов.',
             'title.unique' => 'Категория с таким названием уже есть.',
+
+            'alias.unique' => 'Алиас недоступен.',
 
             'desc.required' => 'Необходимо указать описание.',
             'desc.min' => 'Описание должно содержать не менее 10 символов.',

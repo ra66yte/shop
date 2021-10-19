@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth', 'role:received'], 'prefix' => 'panel'], f
         Route::post('/save', [App\Http\Controllers\ProductController::class, 'store'])->name('add_product_save');
         Route::post('/update', [App\Http\Controllers\ProductController::class, 'update'])->name('product_update');
         Route::get('/{id}', [App\Http\Controllers\ProductController::class, 'panelShow'])->name('show_product');
+        Route::post('/delete', [App\Http\Controllers\ProductController::class, 'delete'])->name('product_delete');
     });
 
     Route::group(['prefix' => 'categories'], function(){
