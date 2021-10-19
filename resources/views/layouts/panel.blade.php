@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Shop') }}</title>
+    <title>{{ config('app.name', 'Shop') }} @yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -35,17 +35,6 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link ml-auto" href="#"><i class="bi bi-x-diamond"></i> Каталог</a>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    @csrf
-                    <input class="form-control mr-sm-2" type="search" placeholder="Что будем искать?"
-                           aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти</button>
-                </form>
                 <ul class="navbar-nav ml-auto">
                     @guest
                         @if (Route::has('login'))
@@ -115,6 +104,7 @@
             </div>
         </div>
     </div>
-@yield('scripts')
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>
