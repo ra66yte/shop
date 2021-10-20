@@ -8,8 +8,21 @@ document.addEventListener('DOMContentLoaded', function () {
     let labels = document.querySelectorAll('label');
     let header = document.querySelector('.card-header');
     let id = document.getElementById('category-id').value;
+    let title = document.getElementById('title');
+    let alias = document.getElementById('alias');
 
     let fields = document.querySelectorAll('input.form-control, textarea.form-control');
+
+    title.addEventListener('input', function () {
+        if (title.value === '') alias.value = '';
+
+        axios
+            .post(alias.dataset.action, {str: title.value})
+            .then(response => {
+                if (response.data.alias) alias.value = response.data.alias;
+            });
+    });
+
 
     btn.addEventListener('click', function () {
 
@@ -49,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     p[0].innerText = 'Подчиняется: ' + response.data.parent;
                     p[1].innerText = 'Название: ' + response.data.title;
-                    p[2].innerText = 'Описание: ' + response.data.description;
+                    p[2].innerText = 'Алиас: ' + response.data.alias;
+                    p[3].innerText = 'Описание: ' + response.data.description;
                     for (let i = 0; i < p.length; i++) {
                         p[i].classList.remove('d-none');
                     }

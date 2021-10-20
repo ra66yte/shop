@@ -50,6 +50,18 @@
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>
                 <div class="col px-0 pt-2">
+                    <p class="text" data-title>Алиас: {{ $category->alias }}</p>
+                    <label class="d-none" for="alias">Алиас: </label>
+                    <input id="alias"
+                           class="inp form-control d-none"
+                           type="text"
+                           name="alias"
+                           required
+                           value="{{ $category->alias }}"
+                           data-action="{{ route('panel_get_alias') }}">
+                    <span class="invalid-feedback" role="alert"><strong></strong></span>
+                </div>
+                <div class="col px-0 pt-2">
                     <p class="text" data-desc>Описание: {{ $category->description }}</p>
                     <label class="d-none" for="desc">Описание: </label> <textarea id="desc"
                                                                                   class="inp form-control d-none"

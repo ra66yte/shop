@@ -22,7 +22,7 @@
                             <option value="">- Не указано -</option>
                             @foreach($categories as $category)
                                <option
-                                   value="{{ $category->id }}">{{ $category->title }}</option>
+                                   value="{{ $category->id }}" {{ old('parent_id') == $category->id ? 'selected' : '' }}>{{ $category->title }}</option>
                                @if ($category->sub->count())
                                    @include('panel.categories.subcategories_list', ['subcategories' => $category->sub, 'prefix' => $category->title])
                                @endif

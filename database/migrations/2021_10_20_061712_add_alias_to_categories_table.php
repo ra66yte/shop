@@ -14,7 +14,7 @@ class AddAliasToCategoriesTable extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('alias', 60)->nullable(false)->after('title');
+            $table->string('alias', 60)->nullable(false)->unique()->after('title');
         });
     }
 

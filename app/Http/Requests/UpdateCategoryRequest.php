@@ -30,6 +30,7 @@ class UpdateCategoryRequest extends FormRequest
             'parent_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('id', $this->parent_id), 'not_in:' . $this->id],
             'title' => 'required|min:2|max:60|unique:App\Models\Category,title,' . $this->id,
             //'title' => ['required', 'min:2', 'max:60', Rule::unique('categories', 'title')->ignore((int) $this->id)],
+            'alias' => 'string|unique:App\Models\Category,alias,' . $this->id,
             'desc' => 'required|min:10|max:255'
         ];
     }
@@ -45,6 +46,8 @@ class UpdateCategoryRequest extends FormRequest
             'title.min' => 'Название должно содержать не менее 2 символов.',
             'title.max' => 'Название может содержать не более 60 символов.',
             'title.unique' => 'Категория с таким названием уже есть.',
+
+            'alias.unique' => 'Алиас недоступен.',
 
             'desc.required' => 'Необходимо указать описание.',
             'desc.min' => 'Описание должно содержать не менее 10 символов.',

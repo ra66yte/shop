@@ -62,6 +62,7 @@ class CategoryController extends Controller
         $category = new Category();
         $category->parent_id = ($req->parent_id == null) ? 0 : $req->parent_id;
         $category->title = $req->title;
+        $category->alias = $req->alias;
         $category->description = $req->desc;
         $category->save();
 
@@ -74,10 +75,14 @@ class CategoryController extends Controller
         $category = Category::find($req->id);
         $category->parent_id = ($req->parent_id == null) ? 0 : $req->parent_id;
         $category->title = $req->title;
+        $category->alias = $req->alias;
         $category->description = $req->desc;
         $category->save();
 
-        return ['parent' => (isset($category->parent) ? $category->parent->title : '-'), 'title' => $category->title, 'description' => $category->description];
+        return ['parent' => (isset($category->parent) ? $category->parent->title : '-'),
+                'title' => $category->title,
+                'alias' => $category->alias,
+                'description' => $category->description];
     }
 
     public function delete(Request $req)
@@ -85,7 +90,6 @@ class CategoryController extends Controller
         Category::find($req->id)->delete();
         return ['success' => 'Категория удалена', 'route' => route('panel_cat_list')];
     }
-
 
 
 }
