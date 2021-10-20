@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Shop') }}</title>
+    <title>{{ config('app.name', 'Shop') }} | @yield('title')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -35,17 +35,14 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-5">
                     <li class="nav-item">
-                        <a class="nav-link ml-auto" href="#"><i class="bi bi-x-diamond"></i> Каталог</a>
+                        <a class="nav-link ml-auto" href="#"> Все товары</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ml-auto" href="#"> Категории</a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    @csrf
-                    <input class="form-control mr-sm-2" type="search" placeholder="Что будем искать?"
-                           aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти</button>
-                </form>
                 <ul class="navbar-nav ml-auto">
                     @guest
                         @if (Route::has('login'))
@@ -93,28 +90,29 @@
         </div>
     </nav>
 
-    <div class="container-xl pb-4">
-        <div class="row">
-            <div class="col-12">
-                <ul class="breadcrumb">
-                    @yield('breadcrumbs')
-                </ul>
-            </div>
-        </div>
+    <div class="container-xl">
+        @yield('breadcrumbs')
         @include('layouts.messages')
         <div class="row">
+            @yield('aside')
+            @yield('content')
+        </div>
+    </div>
+
+
+<!--
+        <div class="row">
             <aside class="col-lg-3 col-md-4 pr-md-0 pt-2 pt-md-0 order-md-first order-last">
-                @yield('aside')
             </aside>
             <div class="col-lg-9 col-md-8 /*pl-md-0*/">
                 <div class="row">
                     <div class="col-12">
-                        @yield('content')
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+-->
+
 @yield('scripts')
 </body>
 </html>

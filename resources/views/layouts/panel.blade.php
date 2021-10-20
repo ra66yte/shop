@@ -73,9 +73,6 @@
                             </div>
                         </li>
                     @endguest
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-cart"></i> Корзина</a>
-                    </li>
                 </ul>
 
             </div>

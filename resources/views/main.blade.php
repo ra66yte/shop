@@ -1,5 +1,15 @@
 @extends('layouts.app')
 
+@section('breadcrumbs')
+    <div class="row">
+        <div class="col-12">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Кабинет</li>
+            </ul>
+        </div>
+    </div>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-md-12">

@@ -13,7 +13,7 @@
         <div class="card-header d-flex justify-content-between align-items-center border border-bottom-0">
             <div>Категории</div>
             <div>
-                <a href="{{ route('add_category') }}" class="btn btn-outline-secondary">Добавить</a>
+                <a href="{{ route('panel_category_add') }}" class="btn btn-outline-secondary">Добавить</a>
             </div>
         </div>
         @if (count($categories))
@@ -38,7 +38,7 @@
                         </td>
                         <td class="align-middle">{{ $category->description }}</td>
                         <td class="text-center"><a class="btn btn-primary"
-                                                   href="{{ route('show_category', $category->id) }}">Посмотреть</a>
+                                                   href="{{ route('panel_category_show', $category->id) }}">Посмотреть</a>
                         </td>
                     </tr>
                 @endforeach
@@ -47,7 +47,7 @@
 
         @else
             <div class="card-body border rounded-bottom">
-                Категорий нет, но Вы можете добавить <a href="{{ route('add_category') }}" class="link">новую</a>.
+                Категорий нет, но Вы можете добавить <a href="{{ route('panel_category_add') }}" class="link">новую</a>.
             </div>
         @endif
 

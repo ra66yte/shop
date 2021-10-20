@@ -73,7 +73,7 @@ class ProductController extends Controller
 
         if ($req->hasFile('images')) $this->addProductPhoto($req->file('images'), $product->id);
 
-        return ['success' => 'Изменения сохранены.', 'route' => route('show_product', $product->id)];
+        return ['success' => 'Изменения сохранены.', 'route' => route('panel_product_show', $product->id)];
     }
 
     public function show($id)
@@ -84,10 +84,7 @@ class ProductController extends Controller
     public function panelShow($id)
     {
         $data['categories'] = Category::getCategories();
-        $data['product'] = Product::find($id);
-        if ($data['product'] === null) {
-            return redirect()->route('panel_products_list')->withErrors('Товар не найден!');
-        }
+        $data['product'] = Product::findOrFail($id);
 
         return view('panel.products.show', $data);
     }

@@ -33,11 +33,8 @@ class CategoryController extends Controller
 
     public function panelShow($id)
     {
-        $data['category'] = Category::find($id);
+        $data['category'] = Category::findOrFail($id);
         $data['categories'] = Category::getCategories();
-        if ($data['category'] === null) {
-            return redirect()->route('panel_cat_list')->withErrors('Категория не найдена!');
-        }
 
         return view('panel.categories.show', $data);
     }

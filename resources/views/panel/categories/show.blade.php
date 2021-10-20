@@ -69,6 +69,9 @@
                                                                                   data-name="Описание">{{ $category->description }}</textarea>
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>
+                <div class="col px-0 pt-2">
+                    <p class="text" data-desc>Количество товаров: {{ $category->products->count() }}</p>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12 d-flex justify-content-between">

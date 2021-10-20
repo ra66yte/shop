@@ -13,7 +13,7 @@
         <div class="card-header d-flex justify-content-between align-items-center border border-bottom-0">
             <div>Товары</div>
             <div>
-                <a href="{{ route('add_product') }}" class="btn btn-outline-secondary">Добавить</a>
+                <a href="{{ route('panel_product_add') }}" class="btn btn-outline-secondary">Добавить</a>
             </div>
         </div>
 
@@ -34,7 +34,7 @@
                         </td>
                         <td class="align-middle text-center">{{ $product->category->title }}</td>
                         <td class="text-center"><a class="btn btn-primary"
-                                                   href="{{ route('show_product', $product->id) }}">Посмотреть</a>
+                                                   href="{{ route('panel_product_show', $product->id) }}">Посмотреть</a>
                         </td>
                     </tr>
                 @endforeach
@@ -43,7 +43,7 @@
 
         @else
             <div class="card-body border rounded-bottom">
-                Товаров нет, но Вы можете добавить <a href="{{ route('add_product') }}" class="link">новый</a>.
+                Товаров нет, но Вы можете добавить <a href="{{ route('panel_product_add') }}" class="link">новый</a>.
             </div>
         @endif
 
