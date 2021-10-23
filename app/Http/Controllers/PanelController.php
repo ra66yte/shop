@@ -17,7 +17,12 @@ class PanelController extends Controller
 
     public function getAlias(Request $req)
     {
-        return ['alias' => Str::slug($req->str, '-')];
+        $data = [];
+        foreach ($req->str as $key => $value) {
+            $data[$key] = Str::slug($value, '-');
+        }
+
+        return $data;
     }
 
 }

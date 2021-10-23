@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use MongoDB\Driver\Session;
@@ -14,7 +15,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $data['categories'] = Category::select(['id', 'parent_id', 'title', 'description'])->get();
+        $data['categories'] = Category::select(['id', 'parent_id', 'title', 'alias', 'description'])->paginate(20);
         return view('categories.index', $data);
     }
 
@@ -24,11 +25,14 @@ class CategoryController extends Controller
         return view('panel.categories.list', $data);
     }
 
-    public function show($id)
+    public function show($alias)
     {
-        $data['category'] = Category::find($id);
-        if (empty($data['category'])) redirect()->route('panel_cat_list');
-        return view('categories.show', $data);
+        $category = Category::where('alias', $alias)->get()->first();
+        if (!isset($category)) return redirect()->route('categories_list')->withErrors('Категория не найдена.');
+        $products = Product::where('category_id', $category->id)->paginate(15);
+
+        $subcategories = Category::where('parent_id', $category->id)->get();
+        return view('categories.show', compact('category', 'products', 'subcategories'));
     }
 
     public function panelShow($id)

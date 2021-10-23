@@ -3,6 +3,8 @@
     "/js/panel.categories.js": "/js/panel.categories.js",
     "/js/panel.products.js": "/js/panel.products.js",
     "/js/panel.add_cat.js": "/js/panel.add_cat.js",
+    "/js/basket.js": "/js/basket.js",
+    "/js/confirm_basket.js": "/js/confirm_basket.js",
     "/css/app.css": "/css/app.css",
     "/css/style.css": "/css/style.css"
 }

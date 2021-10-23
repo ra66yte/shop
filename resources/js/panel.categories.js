@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let labels = document.querySelectorAll('label');
     let header = document.querySelector('.card-header');
     let id = document.getElementById('category-id').value;
+
     let title = document.getElementById('title');
     let alias = document.getElementById('alias');
 
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (title.value === '') alias.value = '';
 
         axios
-            .post(alias.dataset.action, {str: title.value})
+            .post(alias.dataset.action, {str: {'alias': title.value}})
             .then(response => {
                 if (response.data.alias) alias.value = response.data.alias;
             });
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     del.classList.add('d-none');
                     this.classList.add('d-none');
 
-                    header.innerText = response.data.title;
+                    header.innerText = 'Редактирование категории "' + response.data.title + '"';
 
                     showRequestMessage('Изменения сохранены.');
                 }

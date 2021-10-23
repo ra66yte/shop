@@ -15,7 +15,8 @@ class ProductController extends Controller
 
     public function index()
     {
-        return view('panel.products.index');
+        $products = Product::orderBy('id', 'DESC')->paginate(15);
+        return view('products.index', compact('products'));
     }
 
     public function panelIndex()
@@ -76,9 +77,11 @@ class ProductController extends Controller
         return ['success' => 'Изменения сохранены.', 'route' => route('panel_product_show', $product->id)];
     }
 
-    public function show($id)
+    public function show($alias)
     {
-
+        $product = Product::where('alias', $alias)->get()->first();
+        if (!isset($product)) return redirect()->route('products_list')->withErrors('Товар не найден.');
+        return view('products.show', compact('product'));
     }
 
     public function panelShow($id)

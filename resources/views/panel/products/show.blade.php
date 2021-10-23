@@ -58,6 +58,7 @@
                     <label for="desc">Описание:</label>
                     <textarea id="desc"
                               class="form-control"
+                              rows="8"
                               name="desc">{{ $product->description }}</textarea>
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>

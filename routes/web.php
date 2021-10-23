@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BasketController;
 
 
 /*
@@ -22,14 +23,30 @@ use App\Http\Controllers\ProductController;
 
 Auth::routes();
 
-// Main
 Route::get('/', [HomeController::class, 'index'])->name('index');
-Route::get('/main', [App\Http\Controllers\HomeController::class, 'main'])->name('main');
+
+Route::group(['middleware' => 'auth'], function(){
+    // Main
+    Route::get('/main', [HomeController::class, 'main'])->name('main');
+});
+
+// Basket
+Route::group(['prefix' => 'basket'], function(){
+    Route::get('/', [BasketController::class, 'index'])->name('basket');
+    Route::post('/store', [BasketController::class, 'store'])->name('basket_store');
+    Route::post('/get_products', [BasketController::class, 'getProducts'])->name('get_basket_products');
+});
 
 // Категории
 Route::group(['prefix' => 'categories'], function(){
     Route::get('/', [CategoryController::class, 'index'])->name('categories_list');
-    Route::get('/{id}', [CategoryController::class, 'show'])->name('show_category');
+    Route::get('/{alias}', [CategoryController::class, 'show'])->name('category_show');
+});
+
+// Товары
+Route::group(['prefix' => 'products'], function(){
+    Route::get('/', [ProductController::class, 'index'])->name('products_list');
+    Route::get('/{alias}', [ProductController::class, 'show'])->name('product_show');
 });
 
 Route::group(['middleware' => ['auth', 'role:received'], 'prefix' => 'panel'], function(){ // Если роль вообще есть, значит есть доступ к панели управления

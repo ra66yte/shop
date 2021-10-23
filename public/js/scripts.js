@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+    // localStorage.removeItem('basket');
+    let basket = localStorage.getItem('basket');
+
+    if (basket) {
+        let basketLink = document.getElementById('basket-link');
+        let basketItems = JSON.parse(basket);
+        let basketCount = Object.keys(basketItems).reduce((sum, key) => sum + parseInt(basketItems[key]), 0);
+
+        if (basketLink) basketLink.innerHTML = '<i class="bi bi-cart-fill"></i> Корзина <span class="badge badge-secondary">' + basketCount + '</span>';
+    }
+
     if (getCookie('error') || getCookie('success')) {
         let message,
             cookieName,

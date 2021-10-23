@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -37,10 +38,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-5">
                     <li class="nav-item">
-                        <a class="nav-link ml-auto" href="#"> Все товары</a>
+                        <a class="nav-link ml-auto @if (Route::currentRouteNamed('product*')) active @endif" href="{{ route('products_list') }}"> Все товары</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link ml-auto" href="#"> Категории</a>
+                        <a class="nav-link ml-auto @if (Route::currentRouteNamed('categor*')) active @endif" href="{{ route('categories_list') }}"> Категории</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
@@ -82,7 +83,7 @@
                         </li>
                     @endguest
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-cart"></i> Корзина</a>
+                        <a id="basket-link" class="nav-link @if (Route::currentRouteNamed('basket*')) active @endif" href="{{ route('basket') }}"><i class="bi bi-cart"></i> Корзина</a>
                     </li>
                 </ul>
 

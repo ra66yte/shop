@@ -15,6 +15,8 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/panel.categories.js', 'public/js')
     .js('resources/js/panel.products.js', 'public/js')
     .js('resources/js/panel.add_cat.js', 'public/js')
+    .js('resources/js/basket.js', 'public/js')
+    .js('resources/js/confirm_basket.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/style.scss', 'public/css')
     .sourceMaps();

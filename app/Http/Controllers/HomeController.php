@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Gate;
-use App\Models\Role;
-use App\Models\Permission;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -17,7 +15,6 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
     }
 
     /**
@@ -27,7 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('index');
+        //$categories = Category::with('products')->select('id', 'title', 'alias')->get();
+        $categories = Category::getCategories();
+        $products = Product::with(['category', 'photos'])->select('id', 'category_id', 'title', 'alias', 'amount')->paginate(20);
+        return view('index', compact('categories', 'products'));
     }
 
     public function main()

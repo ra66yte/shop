@@ -29,7 +29,7 @@ class AddProductRequest extends FormRequest
         return [
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('id', $this->category_id)],
             'title' => 'required|min:2|max:60|unique:App\Models\Product,title',
-            'desc' => 'required|min:10|max:255',
+            'desc' => 'required|min:10|max:1000',
             'alias' => 'string|unique:App\Models\Product,alias',
             'amount' => 'nullable|regex:/^\d{1,18}(\.\d{1,2})?$/',
             'images.*' => 'image|mimes:jpeg,bmp,png|max:2000',
@@ -49,7 +49,7 @@ class AddProductRequest extends FormRequest
 
             'desc.required' => 'Необходимо указать описание.',
             'desc.min' => 'Описание должно содержать не менее 10 символов.',
-            'desc.max' => 'Описание может содержать не более 255 символов.',
+            'desc.max' => 'Описание может содержать не более 1000 символов.',
 
             'alias.unique' => 'Алиас недоступен.',
 
