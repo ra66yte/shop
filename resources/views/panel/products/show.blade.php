@@ -15,7 +15,8 @@
     <div class="card">
         <div class="card-header">Редактирование товара <b>"{{ $product->title }}"</b></div>
         <div class="card-body">
-            <form id="update-product-form" action="{{ route('product_update') }}" method="post" enctype="multipart/form-data">
+            <form id="update-product-form" action="{{ route('product_update') }}" method="post"
+                  enctype="multipart/form-data">
                 @csrf
                 <input id="product-id" type="hidden" name="id" value="{{ $product->id }}">
                 <div class="form-group">
@@ -54,6 +55,7 @@
                            data-action="{{ route('panel_get_alias') }}">
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>
+
                 <div class="form-group">
                     <label for="desc">Описание:</label>
                     <textarea id="desc"
@@ -63,6 +65,7 @@
                     <span class="invalid-feedback" role="alert"><strong></strong></span>
                 </div>
 
+
                 <div class="form-row">
                     <div class="form-group col-3">
                         <label for="amount">Цена</label>
@@ -70,6 +73,15 @@
                                class="form-control col-6 text-center"
                                placeholder="0.00"
                                value="{{ $product->amount }}">
+                        <span class="invalid-feedback" role="alert"><strong></strong></span>
+                    </div>
+                    <div class="form-group col-3">
+                        <label for="count">Количество:</label>
+                        <input id="count" type="text" name="count"
+                               class="form-control col-6 text-center"
+                               placeholder="0"
+                               value="{{ $product->count }}"
+                               required>
                         <span class="invalid-feedback" role="alert"><strong></strong></span>
                     </div>
                 </div>

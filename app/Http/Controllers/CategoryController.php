@@ -29,7 +29,7 @@ class CategoryController extends Controller
     {
         $category = Category::where('alias', $alias)->get()->first();
         if (!isset($category)) return redirect()->route('categories_list')->withErrors('Категория не найдена.');
-        $products = Product::where('category_id', $category->id)->paginate(15);
+        $products = Product::where('category_id', $category->id)->orderBy('id', 'DESC')->paginate(15);
 
         $subcategories = Category::where('parent_id', $category->id)->get();
         return view('categories.show', compact('category', 'products', 'subcategories'));

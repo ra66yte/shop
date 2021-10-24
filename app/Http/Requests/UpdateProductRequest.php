@@ -30,10 +30,10 @@ class UpdateProductRequest extends FormRequest
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('id', $this->category_id)],
             'title' => 'required|min:2|max:60|unique:App\Models\Product,title,' . $this->id,
             //'title' => ['required', 'min:2', 'max:60', Rule::unique('products', 'title')->ignore((int) $this->id)],
-            'desc' => 'required|min:10|max:255',
+            'desc' => 'required|min:10|max:1000',
             'alias' => 'string|unique:App\Models\Product,alias,' . $this->id,
             //'alias' => ['string', Rule::unique('products', 'alias')->ignore((int) $this->id)],
-
+            'count' => 'required|numeric|min:0',
             'amount' => 'nullable|regex:/^\d{1,18}(\.\d{1,2})?$/',
             'images.*' => 'image|mimes:jpeg,bmp,png|max:2000',
         ];
@@ -52,9 +52,15 @@ class UpdateProductRequest extends FormRequest
 
             'desc.required' => 'Необходимо указать описание.',
             'desc.min' => 'Описание должно содержать не менее 10 символов.',
-            'desc.max' => 'Описание может содержать не более 255 символов.',
+            'desc.max' => 'Описание может содержать не более 1000 символов.',
 
             'alias.unique' => 'Алиас недоступен.',
+
+            'count.required' => 'Укажите количество добавляемого товара.',
+            'count.numeric' => 'Количество указано неправильно.',
+            'count.min' => 'Количество указано неправильно.',
+
+
 
             'amount.regex' => 'Стоимость указана неправильно.',
 

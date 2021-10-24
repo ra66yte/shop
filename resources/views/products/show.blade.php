@@ -23,7 +23,8 @@
                     <div id="carouselProduct" class="carousel slide" data-ride="carousel">
                         <ol class="carousel-indicators">
                             @foreach ($product->photos as $photo)
-                                <li data-target="#carouselProduct" data-slide-to="{{ $loop->index }}" {{ $loop->iteration == 1 ? 'class="active"' : ''  }}></li>
+                                <li data-target="#carouselProduct"
+                                    data-slide-to="{{ $loop->index }}" {{ $loop->iteration == 1 ? 'class="active"' : ''  }}></li>
                             @endforeach
                         </ol>
                         <div class="carousel-inner">
@@ -48,11 +49,11 @@
                     </div>
                 @endif
             @else
-<!--                <div class="card-body">-->
-                    <div class="products__photo">
-                        <img src="{{ asset('images/no-image.png') }}" alt="no image">
-                    </div>
-<!--                </div>-->
+            <!--                <div class="card-body">-->
+                <div class="products__photo">
+                    <img src="{{ asset('images/no-image.png') }}" alt="no image">
+                </div>
+                <!--                </div>-->
             @endif
         </div>
 
@@ -61,7 +62,9 @@
         <div class="card h-100">
             <div class="card-body">
                 <div class="card-title"><h3>{{ $product->title }}</h3></div>
-                <div class="card-subtitle text-secondary">Артикул: {{ $product->alias }}</div>
+                <div class="card-subtitle text-secondary d-flex align-items-center">Артикул: {{ $product->alias }} <span
+                        class="ml-1 badge badge-{{ $product->count > 0 ? 'success' : 'dark' }}">{{ $product->count > 0 ? 'В' : 'Нет в' }} наличии</span>
+                </div>
                 <div class="card-text">
                     Описание:
                     {{ $product->description }}
@@ -69,7 +72,17 @@
                 </div>
             </div>
             <div class="text-center py-2">
-                <h3><b>{{ $product->amount }} ₴</b></h3> <button id="add-product-to-basket" type="button" class="btn btn-primary" data-id="{{ $product->id }}" data-action="{{ route('basket') }}"><i class="bi bi-cart-plus"></i> В корзину</button>
+                <h3><b>{{ $product->amount }} ₴</b></h3>
+                @if ($product->count < 1)
+                    <button type="button" class="btn btn-secondary" disabled>Товар закончился</button>
+                @else
+                    <button id="add-product-to-basket"
+                            type="button" class="btn btn-primary"
+                            data-id="{{ $product->id }}"
+                            data-action="{{ route('basket') }}">
+                        <i class="bi bi-cart-plus"></i> В корзину
+                    </button>
+                @endif
             </div>
         </div>
 

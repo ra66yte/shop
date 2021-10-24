@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function (){
 
                     let basketItems = JSON.parse(getItem('basket'));
                     let basketCount = Object.keys(basketItems).reduce((sum, key) => sum + parseInt(basketItems[key]), 0);
-                    if (basketLink) basketLink.innerHTML = '<i class="bi bi-cart-fill"></i> Корзина <span class="badge badge-light">' + basketCount + '</span>';
+                    if (basketLink) basketLink.innerHTML = '<i class="bi bi-cart-fill"></i> Корзина <span class="badge badge-secondary">' + basketCount + '</span>';
 
                     btn.classList.remove('btn-primary');
                     btn.classList.add('btn-success');

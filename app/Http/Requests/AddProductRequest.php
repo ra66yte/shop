@@ -32,6 +32,7 @@ class AddProductRequest extends FormRequest
             'desc' => 'required|min:10|max:1000',
             'alias' => 'string|unique:App\Models\Product,alias',
             'amount' => 'nullable|regex:/^\d{1,18}(\.\d{1,2})?$/',
+            'count' => 'required|numeric|min:0',
             'images.*' => 'image|mimes:jpeg,bmp,png|max:2000',
         ];
     }
@@ -43,17 +44,21 @@ class AddProductRequest extends FormRequest
             'category_id.exists' => 'Категория не найдена.',
 
             'title.required' => 'Необходимо указать название.',
-            'title.min' => 'Название должно содержать не менее 2 символов.',
-            'title.max' => 'Название может содержать не более 60 символов.',
+            'title.min' => 'Название должно содержать не менее :min символов.',
+            'title.max' => 'Название может содержать не более :max символов.',
             'title.unique' => 'Товар с таким названием уже есть.',
 
             'desc.required' => 'Необходимо указать описание.',
-            'desc.min' => 'Описание должно содержать не менее 10 символов.',
-            'desc.max' => 'Описание может содержать не более 1000 символов.',
+            'desc.min' => 'Описание должно содержать не менее :min символов.',
+            'desc.max' => 'Описание может содержать не более :max символов.',
 
             'alias.unique' => 'Алиас недоступен.',
 
             'amount.regex' => 'Стоимость указана неправильно.',
+
+            'count.required' => 'Укажите количество добавляемого товара.',
+            'count.numeric' => 'Количество указано неправильно.',
+            'count.min' => 'Количество указано неправильно.',
 
             'images.*.image' => 'Для загрузки доступны только изображения.',
             'images.*.mimes' => 'Для загрузки доступны изображения в формате jpeg, bmp и png.',

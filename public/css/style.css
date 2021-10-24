@@ -71,6 +71,6 @@
 .basket td {
   vertical-align: middle;
 }
-.basket td:nth-child(2), .basket td:nth-child(4) {
+.basket td:nth-child(4) {
   font-weight: 700;
 }

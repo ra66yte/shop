@@ -10,9 +10,17 @@ class Order extends Model
     use HasFactory;
 
     public function products() {
-        return $this->belongsToMany(Product::class)->withPivot('count')->withTimestamps();
+        return $this->belongsToMany(Product::class)->withPivot('count', 'price')->withTimestamps();
     }
 
-
+    public function getFullAmount() {
+        $amount = 0;
+        if ($this->products->count()) {
+            foreach ($this->products as $product) {
+                $amount += ($product->pivot->count * $product->pivot->price);
+            }
+        }
+        return number_format($amount, '2', '.' , ' ');
+    }
 
 }

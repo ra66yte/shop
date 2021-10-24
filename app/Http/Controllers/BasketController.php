@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderCreated;
+use App\Models\ActivateLink;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BasketController extends Controller
 {
@@ -14,55 +18,75 @@ class BasketController extends Controller
     }
 
     public function store(Request $req) {
+        $user_type = 0; // 0 - гость, 1 - есть в базе, но не залогинен, 2 - есть в базе и залогинен
+        $password = '';
+
         $ids = json_decode($req->ids, true);
+        if (Auth::check()) {
+            $user = Auth::user();
+            $user_type = 2;
+        } else {
+            $user = User::where('email', $req->email)->get()->first();
+            if (isset($user)) {
+                $user_type = 1;
+            } else {
+                $password = $this->gen_password(8);
+
+                $user = User::create(['last_name' => '',
+                    'first_name' => $req->name,
+                    'middle_name' => '',
+                    'email' => $req->email,
+                    'password' => password_hash($password, PASSWORD_DEFAULT)]);
+            }
+
+        }
 
         $order = Order::create();
-        $order->user_id = Auth::user()->id;
-        $order->name = Auth::user()->last_name . ' ' . Auth::user()->first_name . ' ' . Auth::user()->middle_name;
+        $order->user_id = $user->id;
         $order->save();
 
         $order->products()->attach(array_keys($ids));
         foreach ($ids as $id => $count) {
             $pivotRow = $order->products()->where('product_id', $id)->first()->pivot;
             $pivotRow->count = $count;
+            $pivotRow->price = $order->products()->where('product_id', $id)->first()->amount;
             $pivotRow->update();
+
+            $product = Product::find($id);
+            $product->count = $product->count - $count;
+            $product->update();
+
         }
 
-        return ['success' => 'Заказ оформлен.', 'route' => route('main')];
+        $mail_data = [
+            'name' => $user->first_name,
+            'email' => $user->email,
+            'password' => $password,
+            'order' => $order,
+            'activate_link' => $this->genActivateLink($user->id, $order->id),
+            'user_type' => $user_type,
+        ];
+
+        Mail::to($user->email)->send(new OrderCreated($mail_data));
+
+        $message = 'На Ваш адрес электронной почты ' . $user->email . ' было отправлено письмо для подтверждения заказа.';
+
+        return ['success' => $message, 'route' => route('basket')];
     }
 
-    /*public function add($id) {
-        $orderId = session('orderId');
-        if (is_null($orderId)) {
-            $order = Order::create();
-            session(['orderId' => $order->id]);
-        } else {
-            $order = Order::find($orderId);
+    public function confirm($hash) {
+        $confirm = ActivateLink::where('hash', $hash)->get()->first();
+        if (isset($confirm)) {
+            $order = Order::find($confirm->order_id);
+            $order->status = 1;
+            $order->save();
+            $confirm->delete();
+
+            return redirect()->route(Auth::check() ? 'main' : 'login')->withSuccess('Заказ ' . (Auth::check() ? '#' . $order->id : '') . ' подтвержден.');
         }
 
-        if ($order->products->contains($id)) {
-            $pivotRow = $order->products()->where('product_id', $id)->first()->pivot;
-            $pivotRow->count++;
-            $pivotRow->update();
-            dd($pivotRow);
-        } else {
-            $order->products()->attach($id);
-        }
-
-        return redirect()->route('basket');
+        return redirect()->route('index')->withErrors('Произошла ошибка.');
     }
-
-    public function remove($id)
-    {
-        $orderId = session('orderId');
-        if (is_null($orderId)) {
-            return redirect()->route('basket');
-        } else {
-            $order = Order::find($orderId);
-        }
-
-        return redirect()->route('basket');
-    }*/
 
     public function getProducts(Request $req) {
         $ids = json_decode($req->ids);
@@ -76,13 +100,42 @@ class BasketController extends Controller
                     'amount' => $product->amount,
                     'count' => $count,
                     'image' => ($product->photos->count()) ? asset('storage/' . $product->photos->first()->image) : asset('images/no-image.png'),
-                    'route' => route('product_show', $product->alias)
+                    'available' => $product->count,
+                    'route' => route('product_show', [$product->category->alias, $product->alias])
                 ];
                 $products[$product->id] = $data_product;
             }
         }
 
         return ['products' => $products];
+    }
+
+    private function gen_password($length = 6)
+    {
+        $password = '';
+        $arr = array(
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+        );
+
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $arr[random_int(0, count($arr) - 1)];
+        }
+
+        return $password;
+    }
+
+    private function genActivateLink($user_id, $order_id) {
+        $activate_link = new ActivateLink();
+        $activate_link->user_id = $user_id;
+        $activate_link->order_id = $order_id;
+        $activate_link->hash = md5($user_id . time() . $order_id);
+        $activate_link->save();
+
+        return route('confirm_order', $activate_link->hash);
     }
 
 }

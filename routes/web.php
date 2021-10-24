@@ -28,25 +28,28 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::group(['middleware' => 'auth'], function(){
     // Main
     Route::get('/main', [HomeController::class, 'main'])->name('main');
+    Route::get('/orders/{id}', [HomeController::class, 'showOrder'])->name('order_show');
 });
 
 // Basket
 Route::group(['prefix' => 'basket'], function(){
     Route::get('/', [BasketController::class, 'index'])->name('basket');
     Route::post('/store', [BasketController::class, 'store'])->name('basket_store');
+    Route::post('/store_guest', [BasketController::class, 'storeGuest'])->name('basket_store_guest');
     Route::post('/get_products', [BasketController::class, 'getProducts'])->name('get_basket_products');
+    Route::get('/confirm/{hash}', [BasketController::class, 'confirm'])->name('confirm_order');
 });
 
 // Категории
 Route::group(['prefix' => 'categories'], function(){
     Route::get('/', [CategoryController::class, 'index'])->name('categories_list');
-    Route::get('/{alias}', [CategoryController::class, 'show'])->name('category_show');
+    // Route::get('/{alias}', [CategoryController::class, 'show'])->name('category_show');
 });
 
 // Товары
 Route::group(['prefix' => 'products'], function(){
     Route::get('/', [ProductController::class, 'index'])->name('products_list');
-    Route::get('/{alias}', [ProductController::class, 'show'])->name('product_show');
+    // Route::get('/{alias}', [ProductController::class, 'show'])->name('product_show');
 });
 
 Route::group(['middleware' => ['auth', 'role:received'], 'prefix' => 'panel'], function(){ // Если роль вообще есть, значит есть доступ к панели управления
@@ -73,5 +76,8 @@ Route::group(['middleware' => ['auth', 'role:received'], 'prefix' => 'panel'], f
         Route::get('/{id}', [CategoryController::class, 'panelShow'])->name('panel_category_show');
     });
 });
+
+Route::get('/{category}', [CategoryController::class, 'show'])->name('category_show');
+Route::get('/{category}/{product}', [ProductController::class, 'show'])->name('product_show');
 
 

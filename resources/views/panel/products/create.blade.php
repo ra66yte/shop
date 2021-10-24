@@ -64,11 +64,20 @@
 
                 <div class="form-row">
                     <div class="form-group col-3">
-                        <label for="amount">Цена</label>
+                        <label for="amount">Цена:</label>
                         <input id="amount" type="text" name="amount"
                                class="form-control col-6 text-center"
                                placeholder="0.00"
                                value="{{ old('amount') }}">
+                        <span class="invalid-feedback" role="alert"><strong></strong></span>
+                    </div>
+                    <div class="form-group col-3">
+                        <label for="count">Количество:</label>
+                        <input id="count" type="text" name="count"
+                               class="form-control col-6 text-center"
+                               placeholder="0"
+                               value="{{ old('count') }}"
+                               required>
                         <span class="invalid-feedback" role="alert"><strong></strong></span>
                     </div>
                 </div>

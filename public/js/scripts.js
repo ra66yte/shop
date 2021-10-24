@@ -105,3 +105,8 @@ function showRequestMessage(message, className = 'success') {
 
 }
 
+function removeRequestMessages(){
+    let messageBlock = document.getElementById('header-messages');
+    messageBlock.innerHTML = '';
+}
+

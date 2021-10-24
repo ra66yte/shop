@@ -40,6 +40,7 @@ class ProductController extends Controller
         $product->alias = $req->alias;
         $product->description = $req->desc;
         $product->amount = isset($req->amount) ? $req->amount : 0;
+        $product->count = $req->count;
         $product->save();
 
         if ($req->hasFile('images')) $this->addProductPhoto($req->file('images'), $product->id);
@@ -55,6 +56,7 @@ class ProductController extends Controller
         $product->alias = $req->alias;
         $product->description = $req->desc;
         $product->amount = isset($req->amount) ? $req->amount : 0;
+        $product->count = $req->count;
         $product->save();
 
         $old_images = explode(",", $req->old_images);
@@ -77,9 +79,10 @@ class ProductController extends Controller
         return ['success' => 'Изменения сохранены.', 'route' => route('panel_product_show', $product->id)];
     }
 
-    public function show($alias)
+    public function show($category_alias, $product_alias)
     {
-        $product = Product::where('alias', $alias)->get()->first();
+        $category = Category::select('id')->where('alias', $category_alias)->get()->first();
+        $product = Product::where('category_id', $category->id)->where('alias', $product_alias)->get()->first();
         if (!isset($product)) return redirect()->route('products_list')->withErrors('Товар не найден.');
         return view('products.show', compact('product'));
     }

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let basketTable = document.getElementById('basket-table');
     let addOrder = document.getElementById('add-order');
+    let formGuest = document.getElementById('guest-form');
     let tbody = basketTable.getElementsByTagName('tbody')[0];
     let tfoot = basketTable.getElementsByTagName('tfoot')[0];
     let btns = '.btn';
@@ -15,51 +16,61 @@ document.addEventListener('DOMContentLoaded', function () {
                     let trProducts = '';
                     let totalAmount = 0;
                     for (key in products) {
-                        trProducts += ('<tr data-id="' + products[key].id + '">' +
-                                '<td><img src="' + products[key].image + '" width="75px" alt="img"></td>' +
-                                '<td><a href="' + products[key].route + '" class="nav-link">' + products[key].title + '</a></td>' +
-                                '<td>' +
-                                    '<button type="button" class="btn btn-danger mr-2 p-1" data-action="minus"><i class="bi bi-dash"></i></button>' +
-                                    '<span data-name="count">' + products[key].count + '</span>' +
-                                    '<button type="button" class="btn btn-success ml-2 p-1" data-action="plus"><i class="bi bi-plus"></i></button>' +
-                                    ' <span class="text-secondary">/ <b data-name="price">' + products[key].amount + '</b></span>' +
-                                '</td>' +
-                                '<td data-name="amount">' + (products[key].count * products[key].amount).toFixed(2) + '</td>' +
+                        trProducts += ('<tr data-id="' + products[key].id + '" data-available="' + products[key].available + '">' +
+                            '<td><img src="' + products[key].image + '" width="75px" alt="img"></td>' +
+                            '<td><a href="' + products[key].route + '" class="card-link">' + products[key].title + '</a></td>' +
+                            '<td>' +
+                            '<button type="button" class="btn btn-danger mr-2 p-1" data-action="minus"><i class="bi bi-dash"></i></button>' +
+                            '<span data-name="count">' + products[key].count + '</span>' +
+                            '<button type="button" class="btn btn-success ml-2 p-1" data-action="plus"><i class="bi bi-plus"></i></button>' +
+                            ' <span class="text-secondary">/ <b data-name="price">' + products[key].amount + '</b></span>' +
+                            '</td>' +
+                            '<td data-name="amount">' + (products[key].count * products[key].amount).toFixed(2) + '</td>' +
                             '</tr>');
                         totalAmount += (products[key].count * products[key].amount);
                     }
                     tbody.innerHTML = trProducts;
                     tfoot.innerHTML = ('<tr>' +
-                                    '<td colspan="3" class="text-right"><b>Всего к оплате:</b></td>'+
-                                    '<td class="text-center"><b class="text-success" data-name="total-amount">' + totalAmount.toFixed(2) + '</b></td>' +
-                                '</tr>');
+                        '<td colspan="3" class="text-right">К оплате:</td>' +
+                        '<td class="text-center"><h4 class="mb-0"><b class="text-success" data-name="total-amount">' + totalAmount.toFixed(2) + '</b></h4></td>' +
+                        '</tr>');
                     addOrder.closest('div').classList.remove('d-none');
+                    formGuest.classList.remove('d-none');
                 }
             });
     }
 
-    addOrder.addEventListener('click', function(){
+    addOrder.addEventListener('click', function () {
         let basket = localStorage.getItem('basket');
         if (basket) {
+            let name = document.getElementById('name') ? document.getElementById('name').value : null;
+            let email = document.getElementById('email') ? document.getElementById('email').value : null;
             axios
-                .post(addOrder.dataset.action, {ids: basket})
+                .post(addOrder.dataset.action, {ids: basket, name: name, email: email})
                 .then(response => {
+                    console.log(response)
                     if (response.data.success) {
                         setCookie('success', response.data.success);
                         localStorage.removeItem('basket'); // O da, nakonec-to
-                        window.location = response.data.route ? response.data.route : '/?no_route';
+                    } else {
+                        setCookie('error', response.data.error);
                     }
+                    window.location = response.data.route ? response.data.route : '/?no_route';
                 });
         }
     });
 
-    tbody.addEventListener('click', function(event) {
+    tbody.addEventListener('click', function (event) {
+        // Кнопки добавить/убрать товар
         let btn = event.target.closest(btns);
         if (btn && tbody.contains(btn) && btn.dataset.action) {
             let basket = localStorage.getItem('basket');
             let tr = btn.closest('tr');
             let countSpan = btn.closest('td').querySelector('span');
             let count = Number(countSpan.textContent);
+
+            removeRequestMessages();
+
             if (btn.dataset.action === 'minus') {
                 --count;
                 if (count === 0) {
@@ -67,15 +78,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     let lastTr = tbody.querySelector('tr');
                     if (!lastTr) {
                         tbody.innerHTML = ('<tr>' +
-                                '<td colspan="4" class="text-center p-5">В корзине нет товаров. Давайте это <a href="' + (tbody.dataset.action ? tbody.dataset.action : '/?') + '">исправим</a>!</td>'+
+                            '<td colspan="4" class="text-center p-5">В корзине нет товаров. Давайте это <a href="' + (tbody.dataset.action ? tbody.dataset.action : '/?') + '">исправим</a>!</td>' +
                             '</tr>');
                         tfoot.innerHTML = '';
                     }
                 }
             } else {
-                ++count;
+                if (count < tr.dataset.available) {
+                    ++count;
+                } else {
+                    showRequestMessage('Этого товара осталось ' + tr.dataset.available + ' ед.', 'danger');
+                }
             }
-            countSpan.innerText = count;
+
+            countSpan.innerText = count; // Меняем значение количества
 
             let basketItems = JSON.parse(basket);
             if (count === 0) {
@@ -93,8 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function calculateTotalAmount()
-    {
+    function calculateTotalAmount() {
         let trs = tbody.querySelectorAll('tr[data-id]');
         let basketLink = document.getElementById('basket-link');
 
@@ -117,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             if (basketLink) basketLink.innerHTML = '<i class="bi bi-cart"></i> Корзина';
             addOrder.closest('div').classList.add('d-none');
+            if (formGuest) formGuest.classList.add('d-none');
         }
 
 
