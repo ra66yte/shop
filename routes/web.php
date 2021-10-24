@@ -35,7 +35,6 @@ Route::group(['middleware' => 'auth'], function(){
 Route::group(['prefix' => 'basket'], function(){
     Route::get('/', [BasketController::class, 'index'])->name('basket');
     Route::post('/store', [BasketController::class, 'store'])->name('basket_store');
-    Route::post('/store_guest', [BasketController::class, 'storeGuest'])->name('basket_store_guest');
     Route::post('/get_products', [BasketController::class, 'getProducts'])->name('get_basket_products');
     Route::get('/confirm/{hash}', [BasketController::class, 'confirm'])->name('confirm_order');
 });
