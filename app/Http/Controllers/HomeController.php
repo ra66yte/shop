@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaveSettingsRequest;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,4 +49,19 @@ class HomeController extends Controller
         if ($order === null) return redirect()->route('index')->with('warning', 'Заказ не найден.');
         return view('order', compact('order'));
     }
+
+    public function settings() {
+        return view('settings');
+    }
+
+    public function saveSettings(SaveSettingsRequest $req) {
+        $user = User::find(Auth::user()->id);
+        $user->last_name = $req->last_name;
+        $user->first_name = $req->first_name;
+        $user->middle_name = $req->middle_name;
+        if ($req->password) $user->password = password_hash($req->password, PASSWORD_DEFAULT);
+        $user->update();
+        return redirect()->route('settings')->withSuccess('Изменения сохранены.');
+    }
+
 }

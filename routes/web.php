@@ -28,6 +28,8 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::group(['middleware' => 'auth'], function(){
     // Main
     Route::get('/main', [HomeController::class, 'main'])->name('main');
+    Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
+    Route::post('/settings/save', [HomeController::class, 'saveSettings'])->name('save_settings');
     Route::get('/orders/{id}', [HomeController::class, 'showOrder'])->name('order_show');
     Route::post('/orders/{id}/repeat', [BasketController::class, 'repeat'])->name('confirm_repeat');
 });

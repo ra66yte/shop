@@ -12,9 +12,11 @@
 
     </div>
     <div class="list-group pt-2">
-        <a href="#" class="list-group-item list-group-item-action">
+        <a href="{{ route('settings') }}" class="list-group-item list-group-item-action @if (Route::is('settings')) active @endif">
             <i class="bi bi-gear pr-2"></i> Настройки
         </a>
     </div>
     @include('layouts.copyright')
+
+
 </aside>
