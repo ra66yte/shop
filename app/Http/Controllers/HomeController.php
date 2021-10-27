@@ -29,7 +29,7 @@ class HomeController extends Controller
         $categories = Category::getCategories();
         $products = Product::with(['category', 'photos'])->select('id', 'category_id', 'title', 'alias', 'amount', 'count')
             ->orderBy('id', 'DESC')
-            ->paginate(20);
+            ->paginate(9);
         return view('index', compact('categories', 'products'));
     }
 
@@ -43,7 +43,8 @@ class HomeController extends Controller
 
     public function showOrder($id)
     {
-        $order = Order::find($id);
+        $order = Order::where('id', $id)->where('user_id', Auth::user()->id)->get()->first();
+        if ($order === null) return redirect()->route('index')->with('warning', 'Заказ не найден.');
         return view('order', compact('order'));
     }
 }

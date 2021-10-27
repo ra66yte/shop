@@ -83,7 +83,7 @@ class ProductController extends Controller
     {
         $category = Category::select('id')->where('alias', $category_alias)->get()->first();
         $product = Product::where('category_id', $category->id)->where('alias', $product_alias)->get()->first();
-        if (!isset($product)) return redirect()->route('products_list')->withErrors('Товар не найден.');
+        if (!isset($product)) return redirect()->route('products_list')->with('warning', 'Товар не найден.');
         return view('products.show', compact('product'));
     }
 

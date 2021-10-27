@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         '<td class="text-center"><h4 class="mb-0"><b class="text-success" data-name="total-amount">' + totalAmount.toFixed(2) + '</b></h4></td>' +
                         '</tr>');
                     addOrder.closest('div').classList.remove('d-none');
-                    formGuest.classList.remove('d-none');
+                    if (formGuest) formGuest.classList.remove('d-none');
                 }
             });
     }
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             axios
                 .post(addOrder.dataset.action, {ids: basket, name: name, email: email})
                 .then(response => {
-                    console.log(response)
+                    // console.log(response)
                     if (response.data.success) {
                         setCookie('success', response.data.success);
                         localStorage.removeItem('basket'); // O da, nakonec-to

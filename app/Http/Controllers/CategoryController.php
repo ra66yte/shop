@@ -28,7 +28,7 @@ class CategoryController extends Controller
     public function show($alias)
     {
         $category = Category::where('alias', $alias)->get()->first();
-        if (!isset($category)) return redirect()->route('categories_list')->withErrors('Категория не найдена.');
+        if (!isset($category)) return redirect()->route('categories_list')->with('warning', 'Категория не найдена.');
         $products = Product::where('category_id', $category->id)->orderBy('id', 'DESC')->paginate(15);
 
         $subcategories = Category::where('parent_id', $category->id)->get();
@@ -67,7 +67,7 @@ class CategoryController extends Controller
         $category->description = $req->desc;
         $category->save();
 
-        return redirect()->route('panel_cat_list')->withSuccess('Категория добавлена!');
+        return redirect()->route('panel_cat_list')->withSuccess('Категория добавлена.');
 
     }
 
@@ -89,7 +89,7 @@ class CategoryController extends Controller
     public function delete(Request $req)
     {
         Category::find($req->id)->delete();
-        return ['success' => 'Категория удалена', 'route' => route('panel_cat_list')];
+        return ['success' => 'Категория удалена.', 'route' => route('panel_cat_list')];
     }
 
 

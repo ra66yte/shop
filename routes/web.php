@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function(){
     // Main
     Route::get('/main', [HomeController::class, 'main'])->name('main');
     Route::get('/orders/{id}', [HomeController::class, 'showOrder'])->name('order_show');
+    Route::post('/orders/{id}/repeat', [BasketController::class, 'repeat'])->name('confirm_repeat');
 });
 
 // Basket

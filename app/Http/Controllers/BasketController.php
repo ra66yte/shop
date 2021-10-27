@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfirmRepeat;
 use App\Mail\OrderCreated;
 use App\Models\ActivateLink;
 use App\Models\Order;
@@ -18,60 +19,63 @@ class BasketController extends Controller
     }
 
     public function store(Request $req) {
-        $user_type = 0; // 0 - гость, 1 - есть в базе, но не залогинен, 2 - есть в базе и залогинен
-        $password = '';
 
         $ids = json_decode($req->ids, true);
-        if (Auth::check()) {
-            $user = Auth::user();
-            $user_type = 2;
-        } else {
-            $user = User::where('email', $req->email)->get()->first();
-            if (isset($user)) {
-                $user_type = 1;
+        if (is_array($ids) and $ids) {
+            $user_type = 0; // 0 - гость, 1 - есть в базе, но не залогинен, 2 - есть в базе и залогинен
+            $password = '';
+            if (Auth::check()) {
+                $user = Auth::user();
+                $user_type = 2;
             } else {
-                $password = $this->gen_password(8);
+                $user = User::where('email', $req->email)->get()->first();
+                if (isset($user)) {
+                    $user_type = 1;
+                } else {
+                    $password = $this->gen_password(8);
 
-                $user = User::create(['last_name' => '',
-                    'first_name' => $req->name,
-                    'middle_name' => '',
-                    'email' => $req->email,
-                    'password' => password_hash($password, PASSWORD_DEFAULT)]);
+                    $user = User::create(['last_name' => '',
+                        'first_name' => $req->name,
+                        'middle_name' => '',
+                        'email' => $req->email,
+                        'password' => password_hash($password, PASSWORD_DEFAULT)]);
+                }
+
             }
 
+            $order = Order::create();
+            $order->user_id = $user->id;
+            $order->save();
+
+            $order->products()->attach(array_keys($ids));
+            foreach ($ids as $id => $count) {
+                $pivotRow = $order->products()->where('product_id', $id)->first()->pivot;
+                $pivotRow->count = $count;
+                $pivotRow->price = $order->products()->where('product_id', $id)->first()->amount;
+                $pivotRow->update();
+
+                $product = Product::find($id);
+                $product->count = $product->count - $count;
+                $product->update();
+
+            }
+
+            $mail_data = [
+                'name' => $user->first_name,
+                'email' => $user->email,
+                'password' => $password,
+                'order' => $order,
+                'activate_link' => $this->genActivateLink($user->id, $order->id),
+                'user_type' => $user_type,
+            ];
+
+            Mail::to($user->email)->send(new OrderCreated($mail_data));
+
+            $message = 'На Ваш адрес электронной почты ' . $user->email . ' было отправлено письмо для подтверждения заказа.';
+
+            return ['success' => $message, 'route' => route('basket')];
         }
-
-        $order = Order::create();
-        $order->user_id = $user->id;
-        $order->save();
-
-        $order->products()->attach(array_keys($ids));
-        foreach ($ids as $id => $count) {
-            $pivotRow = $order->products()->where('product_id', $id)->first()->pivot;
-            $pivotRow->count = $count;
-            $pivotRow->price = $order->products()->where('product_id', $id)->first()->amount;
-            $pivotRow->update();
-
-            $product = Product::find($id);
-            $product->count = $product->count - $count;
-            $product->update();
-
-        }
-
-        $mail_data = [
-            'name' => $user->first_name,
-            'email' => $user->email,
-            'password' => $password,
-            'order' => $order,
-            'activate_link' => $this->genActivateLink($user->id, $order->id),
-            'user_type' => $user_type,
-        ];
-
-        Mail::to($user->email)->send(new OrderCreated($mail_data));
-
-        $message = 'На Ваш адрес электронной почты ' . $user->email . ' было отправлено письмо для подтверждения заказа.';
-
-        return ['success' => $message, 'route' => route('basket')];
+        return ['error' => 'Произошла ошибка.', 'route' => route('basket')];
     }
 
     public function confirm($hash) {
@@ -85,8 +89,29 @@ class BasketController extends Controller
             return redirect()->route(Auth::check() ? 'main' : 'login')->withSuccess('Заказ ' . (Auth::check() ? '#' . $order->id : '') . ' подтвержден.');
         }
 
-        return redirect()->route('index')->withErrors('Произошла ошибка.');
+        return redirect()->route('index')->with('warning', 'Произошла ошибка.');
     }
+
+    public function repeat(Request $req) {
+        $old_activation = ActivateLink::where('order_id', $req->id)->get()->first();
+        $user = Auth::user();
+        if (isset($old_activation)) {
+            $new_hash = $this->resetActivateLink($user->id, $old_activation->order_id);
+
+            $mail_data = [
+                'name' => $user->first_name,
+                'activate_link' => $this->resetActivateLink($user->id, $req->id),
+            ];
+
+            Mail::to($user->email)->send(new ConfirmRepeat($mail_data));
+
+            return redirect()->route('order_show', $req->id)->withSuccess('Письмо для подтверждения заказа #' . $req->id . ' успешно отправлено!');
+        }
+
+        return redirect()->route('index')->with('warning', 'Произошла ошибка.');
+    }
+
+
 
     public function getProducts(Request $req) {
         $ids = json_decode($req->ids);
@@ -136,6 +161,17 @@ class BasketController extends Controller
         $activate_link->save();
 
         return route('confirm_order', $activate_link->hash);
+    }
+
+    private function resetActivateLink($user_id, $order_id) {
+        $old_activation = ActivateLink::where('order_id', $order_id)->get()->first();
+        if (isset($old_activation)) {
+            $old_activation->hash = md5($user_id . time() . $old_activation->order_id);
+            $old_activation->update();
+            return route('confirm_order', $old_activation->hash);
+        }
+
+        return false;
     }
 
 }
